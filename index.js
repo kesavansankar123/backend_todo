@@ -3,35 +3,39 @@ const express = require("express");
 const Mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
-
+const PORT = 3000;
 const app = express();
 app.use(express.json());
 app.use(cors());
-
+// const url="mongodb://127.0.0.1:27017/login_apis"
 const url = 'mongodb+srv://gokul:sankar@mern.sqrvp1s.mongodb.net/?retryWrites=true&w=majority&appName=mern'
 
 app.use(bodyParser.json());
 app.use(express.json());
 
- function loginDetails() {
-    Mongoose.connect(url) 
-    // Mongoose.connection.once('open',() => {
-    //     console.log('connected success');
-        const db = Mongoose.connection;
-        db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-        db.once('open', () => {
-        console.log('Connected to MongoDB');
+function loginDetails() {
+  Mongoose.connect(url) 
+  // Mongoose.connection.once('open',() => {
+  //     console.log('connected success');
+      const db = Mongoose.connection;
+      db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+      db.once('open', () => {
+      console.log('Connected to MongoDB');
 });       
 }
 
-loginDetails()
+loginDetails();
 
 const todoSchema = new Mongoose.Schema({
   text: String,
   completed: Boolean,
 });
 const Todo = Mongoose.model("Todo", todoSchema);
+
+
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
+});
 
 // Routes
 app.get("/todos", async (req, res) => {
@@ -55,4 +59,6 @@ app.delete("/todos/:id", async (req, res) => {
   res.json({ message: "Todo deleted" });
 });
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
